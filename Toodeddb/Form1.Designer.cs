@@ -43,6 +43,7 @@
             this.Lisabtn = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -138,6 +139,7 @@
             this.otsi_btn.TabIndex = 9;
             this.otsi_btn.Text = "Otsi fail";
             this.otsi_btn.UseVisualStyleBackColor = true;
+            this.otsi_btn.Click += new System.EventHandler(this.otsi_btn_Click);
             // 
             // Kustutabtn
             // 
@@ -190,6 +192,10 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.lisaUusKategooria);
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -236,6 +242,7 @@
         private System.Windows.Forms.Button Lisabtn;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 

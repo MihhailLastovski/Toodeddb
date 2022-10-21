@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace Toodeddb
 {
     public partial class Form1 : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lasto\source\repos\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
         SqlDataAdapter adapter_toode, adapter_kategooria;
         SqlCommand cmd;
+
         public Form1()
         {
             InitializeComponent();
@@ -66,24 +70,62 @@ namespace Toodeddb
 
         private void Kustutabtn_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count == 0)
-                return;
+            connect.Open();
 
-            string sql = "DELETE FROM Toodetable WHERE Id = @rowID";
-
-            using (SqlCommand deleteRecord = new SqlCommand(sql, connect))
+            if (MessageBox.Show("Toode - Jah / Kategooria - Ei", "Mida soovite kustutada?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                connect.Open();
+                if (dataGridView1.SelectedRows.Count == 0) 
+                { 
+                    connect.Close();
+                    return;
+                }
 
-                int selectedIndex = dataGridView1.SelectedRows[0].Index;
-                int rowID = Convert.ToInt32(dataGridView1[0, selectedIndex].Value);
+                string sql = "DELETE FROM Toodetable WHERE Id = @rowID";
 
-                deleteRecord.Parameters.Add("@rowID", SqlDbType.Int).Value = rowID;
-                deleteRecord.ExecuteNonQuery();
+                using (SqlCommand deleteRecord = new SqlCommand(sql, connect))
+                {
+                    int selectedIndex = dataGridView1.SelectedRows[0].Index;
+                    int rowID = Convert.ToInt32(dataGridView1[0, selectedIndex].Value);
 
-                dataGridView1.Rows.RemoveAt(selectedIndex);
+                    deleteRecord.Parameters.AddWithValue("@rowID", rowID);
+                    deleteRecord.ExecuteNonQuery();
+
+                    dataGridView1.Rows.RemoveAt(selectedIndex);
+                }
+            }
+            else 
+            {
+                if (comboBox1.Text == "") 
+                {
+                    connect.Close();
+                    return;
+                }
+
+                string sql = "DELETE FROM Kategooriatable WHERE Kategooria_nimetus = @kat";
+
+                using (SqlCommand deleteRecord = new SqlCommand(sql, connect))
+                {
+                    deleteRecord.Parameters.AddWithValue("@kat", comboBox1.Text);
+                    deleteRecord.ExecuteNonQuery();      
+                }
+            }
+            connect.Close();
+        }
+
+        private void otsi_btn_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                string ext = Path.GetExtension(openFileDialog1.FileName);
+                pictureBox1.Load(openFileDialog1.FileName);
+                Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height); //Venitab pilti
+                pictureBox1.Image = finalImg;
+                pictureBox1.Show();
+                string destinationFile = @"..\..\pictures\" + toodedtxt.Text + ext;
+                File.Copy(openFileDialog1.FileName, destinationFile);
             }
         }
+
 
         private void Lisabtn_Click(object sender, EventArgs e)
         {
@@ -91,14 +133,17 @@ namespace Toodeddb
             {
                 try
                 {
+                    string path = pictureBox1.ImageLocation;
+                    FileInfo fi = new FileInfo(path);
+                    string extn = fi.Extension;
                     cmd = new SqlCommand("INSERT INTO Toodetable (Toodenimetus, Kogus, Hind, Pilt, Kategooria_Id) " +
                         "VALUES (@toode, @kogus, @hind, @pilt, @kat)", connect);
                     connect.Open();
                     cmd.Parameters.AddWithValue("@toode", toodedtxt.Text);
                     cmd.Parameters.AddWithValue("@hind", hindtxt.Text);
                     cmd.Parameters.AddWithValue("@kogus", kogustxt.Text);
-                    cmd.Parameters.AddWithValue("@pilt", toodedtxt.Text + ".jpg");// format ?
-                    cmd.Parameters.AddWithValue("@kat", comboBox1.Text);
+                    cmd.Parameters.AddWithValue("@pilt", toodedtxt.Text + extn);
+                    cmd.Parameters.AddWithValue("@kat", comboBox1.SelectedIndex + 1);
                     cmd.ExecuteNonQuery();
                     connect.Close();
                     kustuta_andmed();
