@@ -126,7 +126,7 @@
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBox1.Location = new System.Drawing.Point(273, 38);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(290, 198);
+            this.pictureBox1.Size = new System.Drawing.Size(290, 190);
             this.pictureBox1.TabIndex = 8;
             this.pictureBox1.TabStop = false;
             // 
@@ -161,6 +161,7 @@
             this.Uuendabtn.TabIndex = 11;
             this.Uuendabtn.Text = "Uuenda";
             this.Uuendabtn.UseVisualStyleBackColor = true;
+            this.Uuendabtn.Click += new System.EventHandler(this.Uuendabtn_Click);
             // 
             // Lisabtn
             // 
@@ -180,6 +181,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(728, 150);
             this.dataGridView1.TabIndex = 13;
+            this.dataGridView1.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_RowHeaderMouseClick);
             // 
             // button1
             // 

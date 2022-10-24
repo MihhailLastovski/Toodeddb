@@ -16,10 +16,10 @@ namespace Toodeddb
 {
     public partial class Form1 : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane.TTHK\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
         SqlDataAdapter adapter_toode, adapter_kategooria;
         SqlCommand cmd;
-
+        Random rand = new Random();
         public Form1()
         {
             InitializeComponent();
@@ -114,6 +114,7 @@ namespace Toodeddb
 
         private void otsi_btn_Click(object sender, EventArgs e)
         {
+            openFileDialog1.InitialDirectory = @"C:\Users\opilane.TTHK\Pictures";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 string ext = Path.GetExtension(openFileDialog1.FileName);
@@ -121,11 +122,46 @@ namespace Toodeddb
                 Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height); //Venitab pilti
                 pictureBox1.Image = finalImg;
                 pictureBox1.Show();
-                string destinationFile = @"..\..\pictures\" + toodedtxt.Text + ext;
-                File.Copy(openFileDialog1.FileName, destinationFile);
+                string destinationFile;
+                try
+                {
+                    destinationFile = @"..\..\pictures\" + toodedtxt.Text + ext;
+                    File.Copy(openFileDialog1.FileName, destinationFile);
+                }
+                catch 
+                {
+                    destinationFile = @"..\..\pictures\" + toodedtxt.Text + rand.Next(1, 99999).ToString() + ext;
+                    File.Copy(openFileDialog1.FileName, destinationFile);
+                }
             }
         }
+        int Id;
+        private void Uuendabtn_Click(object sender, EventArgs e) //1 . 2 . 3 . 5
+        {
 
+        }
+        Bitmap finalImg;
+        Image img;
+        private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            Id = (int)dataGridView1.Rows[e.RowIndex].Cells[0].Value; //try
+            toodedtxt.Text = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
+            kogustxt.Text = dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString();
+            hindtxt.Text = dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString();
+            try
+            {
+                img = Image.FromFile(@"..\..\pictures\" + dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString());
+            }
+            catch 
+            {
+                MessageBox.Show("Fail puudub");
+                img = Image.FromFile(@"..\..\..\question.png");
+            }
+            finalImg = new Bitmap(img, pictureBox1.Width, pictureBox1.Height);
+            pictureBox1.Image = finalImg;
+            string v = dataGridView1.Rows[e.RowIndex].Cells[5].Value.ToString();
+            comboBox1.SelectedIndex = Int32.Parse(v) - 1;
+        }
 
         private void Lisabtn_Click(object sender, EventArgs e)
         {
@@ -137,13 +173,14 @@ namespace Toodeddb
                     FileInfo fi = new FileInfo(path);
                     string extn = fi.Extension;
                     cmd = new SqlCommand("INSERT INTO Toodetable (Toodenimetus, Kogus, Hind, Pilt, Kategooria_Id) " +
-                        "VALUES (@toode, @kogus, @hind, @pilt, @kat)", connect);
+                        "VALUES (@toode, @kogus, @hind, @pilt, SELECT Id FROM Kategooriatable WHERE Kategooria_nimetus=@kat)", connect);
                     connect.Open();
                     cmd.Parameters.AddWithValue("@toode", toodedtxt.Text);
                     cmd.Parameters.AddWithValue("@hind", hindtxt.Text);
                     cmd.Parameters.AddWithValue("@kogus", kogustxt.Text);
                     cmd.Parameters.AddWithValue("@pilt", toodedtxt.Text + extn);
-                    cmd.Parameters.AddWithValue("@kat", comboBox1.SelectedIndex + 1);
+                    cmd.Parameters.AddWithValue("@kat", comboBox1.Items[comboBox1.SelectedIndex].ToString());
+                    
                     cmd.ExecuteNonQuery();
                     connect.Close();
                     kustuta_andmed();
@@ -151,6 +188,7 @@ namespace Toodeddb
                 }
                 catch (Exception)
                 {
+                    MessageBox.Show(comboBox1.Items[comboBox1.SelectedIndex].ToString(), comboBox1.SelectedText);
                     MessageBox.Show("..__..__..__..__", "ERORR");
                 }
             }
