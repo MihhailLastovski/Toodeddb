@@ -16,7 +16,7 @@ namespace Toodeddb
 {
     public partial class Form1 : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane.TTHK\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lasto\source\repos\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
         SqlDataAdapter adapter_toode, adapter_kategooria;
         SqlCommand cmd;
         Random rand = new Random();
@@ -136,9 +136,34 @@ namespace Toodeddb
             }
         }
         int Id;
-        private void Uuendabtn_Click(object sender, EventArgs e) //1 . 2 . 3 . 5
+        private void Uuendabtn_Click(object sender, EventArgs e) 
         {
-
+            if (toodedtxt.Text.Trim() != string.Empty && kogustxt.Text.Trim() != string.Empty && hindtxt.Text.Trim() != string.Empty && comboBox1.SelectedItem != null)
+            {
+                try
+                {
+                    string path = pictureBox1.ImageLocation;
+                    FileInfo fi = new FileInfo(path);
+                    string extn = fi.Extension;
+                    cmd = new SqlCommand("UPDATE Toodetable SET Toodenimetus = @toode, Kogus = @kogus, Hind = @hind, (SELECT [Id] FROM [Kategooriatable] WHERE [kategooria_nimetus]=@kat), Pilt = @pilt WHERE Id = @id", connect);
+                    connect.Open();
+                    cmd.Parameters.AddWithValue("@id", Id);
+                    cmd.Parameters.AddWithValue("@toode", toodedtxt.Text);
+                    cmd.Parameters.AddWithValue("@hind", hindtxt.Text);
+                    cmd.Parameters.AddWithValue("@kogus", kogustxt.Text.Replace(",", "."));
+                    cmd.Parameters.AddWithValue("@pilt", toodedtxt.Text + extn);
+                    cmd.Parameters.AddWithValue("@kat", comboBox1.Items[comboBox1.SelectedIndex].ToString());
+                    cmd.ExecuteNonQuery();
+                    connect.Close();
+                    kustuta_andmed();
+                    Naita_Andmed();
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(comboBox1.Items[comboBox1.SelectedIndex].ToString(), comboBox1.SelectedText);
+                    MessageBox.Show("..__..__..__..__", "ERORR");
+                }
+            }
         }
         Bitmap finalImg;
         Image img;
@@ -173,10 +198,10 @@ namespace Toodeddb
                     FileInfo fi = new FileInfo(path);
                     string extn = fi.Extension;
                     cmd = new SqlCommand("INSERT INTO Toodetable (Toodenimetus, Kogus, Hind, Pilt, Kategooria_Id) " +
-                        "VALUES (@toode, @kogus, @hind, @pilt, SELECT Id FROM Kategooriatable WHERE Kategooria_nimetus=@kat)", connect);
+                        "VALUES (@toode, @kogus, @hind, @pilt, (SELECT [Id] FROM [Kategooriatable] WHERE [kategooria_nimetus]=@kat))", connect);
                     connect.Open();
                     cmd.Parameters.AddWithValue("@toode", toodedtxt.Text);
-                    cmd.Parameters.AddWithValue("@hind", hindtxt.Text);
+                    cmd.Parameters.AddWithValue("@hind", hindtxt.Text.Replace(",","."));
                     cmd.Parameters.AddWithValue("@kogus", kogustxt.Text);
                     cmd.Parameters.AddWithValue("@pilt", toodedtxt.Text + extn);
                     cmd.Parameters.AddWithValue("@kat", comboBox1.Items[comboBox1.SelectedIndex].ToString());
