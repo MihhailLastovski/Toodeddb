@@ -16,7 +16,7 @@ namespace Toodeddb
 {
     public partial class Form1 : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane.TTHK\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lasto\source\repos\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
         SqlDataAdapter adapter_toode, adapter_kategooria;
         SqlCommand cmd;
         Random rand = new Random();
@@ -29,7 +29,6 @@ namespace Toodeddb
         {
             connect.Open(); 
             DataTable dt_toode = new DataTable();
-            //cmd = new SqlCommand("SELECT * FROM Toodetable");
             adapter_toode = new SqlDataAdapter("SELECT * FROM Toodetable", connect);
             adapter_toode.Fill(dt_toode);
             dataGridView1.DataSource = dt_toode;
@@ -132,43 +131,51 @@ namespace Toodeddb
                 }
                 catch 
                 {
-                    destinationFile = @"..\..\pictures\" + toodedtxt.Text + rand.Next(1, 99999).ToString() + ext;
+                    destinationFile = @"..\..\pictures\" + toodedtxt.Text + rand.Next(1, 99999).ToString() + ext; //тут тоже
                     File.Copy(openFileDialog1.FileName, destinationFile);
                 }
             }
         }
         int Id;
-        Bitmap finalImg;
-        Image img;
         private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            Id = (int)dataGridView1.Rows[e.RowIndex].Cells[0].Value; //try
-            toodedtxt.Text = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
-            kogustxt.Text = dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString();
-            hindtxt.Text = dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString();
-            try
+            try 
             {
-                img = Image.FromFile(@"..\..\pictures\" + dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString());
+                comboBox1.Text = null;
+                Id = (int)dataGridView1.Rows[e.RowIndex].Cells[0].Value;
+                toodedtxt.Text = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
+                kogustxt.Text = dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString();
+                hindtxt.Text = dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString();
+                try
+                {
+                    pictureBox1.Load(@"..\..\pictures\" + dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString());
+                }
+                catch
+                {
+                    MessageBox.Show("Fail puudub");
+                    pictureBox1.Load(@"..\..\..\question.png");
+                }
+                Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height);
+                pictureBox1.Image = finalImg;
+                pictureBox1.Show();
+                int v = Int32.Parse(dataGridView1.Rows[e.RowIndex].Cells[5].Value.ToString());
+                cmd = new SqlCommand("SELECT [Kategooria_nimetus] FROM [Kategooriatable] WHERE [Id]=@id", connect);
+                connect.Open();
+                cmd.Parameters.Add("@id", SqlDbType.Int);
+                cmd.Parameters["@id"].Value = v;
+                comboBox1.SelectedItem = cmd.ExecuteScalar().ToString();
+                connect.Close();
             }
-            catch
+            catch 
             {
-                MessageBox.Show("Fail puudub");
-                img = Image.FromFile(@"..\..\..\question.png");
+                MessageBox.Show("Vali toode!");
             }
-            finalImg = new Bitmap(img, pictureBox1.Width, pictureBox1.Height);
-            pictureBox1.Image = finalImg;
-            int v = Int32.Parse(dataGridView1.Rows[e.RowIndex].Cells[5].Value.ToString());
-            cmd = new SqlCommand("SELECT [Kategooria_nimetus] FROM [Kategooriatable] WHERE [Id]=@id", connect);
-            connect.Open();
-            cmd.Parameters.Add("@id", SqlDbType.Int);
-            cmd.Parameters["@id"].Value = v;
-            comboBox1.SelectedText = cmd.ExecuteScalar().ToString();
-            connect.Close();
+            
         }
 
         private void Uuendabtn_Click(object sender, EventArgs e) 
         {
-            if (toodedtxt.Text.Trim() != string.Empty && kogustxt.Text.Trim() != string.Empty && hindtxt.Text.Trim() != string.Empty && comboBox1.SelectedItem != null)
+            if (toodedtxt.Text.Trim() != string.Empty && kogustxt.Text.Trim() != string.Empty && hindtxt.Text.Trim() != string.Empty && comboBox1.Text != null)
             {
                 try
                 {
@@ -177,7 +184,7 @@ namespace Toodeddb
                     string extn = fi.Extension;
                     cmd = new SqlCommand("UPDATE Toodetable SET Toodenimetus = @toode, Kogus = @kogus, Hind = @hind, kategooria_id = (SELECT [Id] FROM [Kategooriatable] WHERE [kategooria_nimetus] = @kat), Pilt = @pilt WHERE Id = @id", connect);
                     connect.Open();
-                    cmd.Parameters.AddWithValue("@id", 15);
+                    cmd.Parameters.AddWithValue("@id", Id);
                     cmd.Parameters.AddWithValue("@toode", toodedtxt.Text);
                     cmd.Parameters.AddWithValue("@hind", hindtxt.Text.Replace(",", "."));
                     cmd.Parameters.AddWithValue("@kogus", kogustxt.Text);
@@ -185,6 +192,8 @@ namespace Toodeddb
                     cmd.Parameters.AddWithValue("@kat", comboBox1.Items[comboBox1.SelectedIndex].ToString());
                     cmd.ExecuteNonQuery();
                     connect.Close();
+                    string destinationFile = @"..\..\pictures\" + toodedtxt.Text + extn; //проверка
+                    File.Copy(fi.FullName, destinationFile);
                     kustuta_andmed();
                     Naita_Andmed();
                 }
@@ -193,9 +202,7 @@ namespace Toodeddb
                     MessageBox.Show("..__..__..__..__", "ERORR");
                 }
             }
-        }
-        
-
+        }      
 
         private void Lisabtn_Click(object sender, EventArgs e)
         {

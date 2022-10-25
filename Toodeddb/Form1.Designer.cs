@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.toodedtxt = new System.Windows.Forms.TextBox();
-            this.kogustxt = new System.Windows.Forms.TextBox();
-            this.hindtxt = new System.Windows.Forms.TextBox();
             this.toodelbl = new System.Windows.Forms.Label();
             this.koguslbl = new System.Windows.Forms.Label();
             this.hindlbl = new System.Windows.Forms.Label();
@@ -44,8 +42,12 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.kogustxt = new System.Windows.Forms.NumericUpDown();
+            this.hindtxt = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.kogustxt)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.hindtxt)).BeginInit();
             this.SuspendLayout();
             // 
             // toodedtxt
@@ -55,22 +57,6 @@
             this.toodedtxt.Name = "toodedtxt";
             this.toodedtxt.Size = new System.Drawing.Size(142, 20);
             this.toodedtxt.TabIndex = 0;
-            // 
-            // kogustxt
-            // 
-            this.kogustxt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.kogustxt.Location = new System.Drawing.Point(125, 96);
-            this.kogustxt.Name = "kogustxt";
-            this.kogustxt.Size = new System.Drawing.Size(142, 20);
-            this.kogustxt.TabIndex = 1;
-            // 
-            // hindtxt
-            // 
-            this.hindtxt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.hindtxt.Location = new System.Drawing.Point(125, 150);
-            this.hindtxt.Name = "hindtxt";
-            this.hindtxt.Size = new System.Drawing.Size(142, 20);
-            this.hindtxt.TabIndex = 2;
             // 
             // toodelbl
             // 
@@ -198,11 +184,28 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // kogustxt
+            // 
+            this.kogustxt.Location = new System.Drawing.Point(125, 96);
+            this.kogustxt.Name = "kogustxt";
+            this.kogustxt.Size = new System.Drawing.Size(120, 20);
+            this.kogustxt.TabIndex = 15;
+            // 
+            // hindtxt
+            // 
+            this.hindtxt.DecimalPlaces = 2;
+            this.hindtxt.Location = new System.Drawing.Point(125, 147);
+            this.hindtxt.Name = "hindtxt";
+            this.hindtxt.Size = new System.Drawing.Size(120, 20);
+            this.hindtxt.TabIndex = 16;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(758, 450);
+            this.Controls.Add(this.hindtxt);
+            this.Controls.Add(this.kogustxt);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.Lisabtn);
@@ -215,13 +218,13 @@
             this.Controls.Add(this.hindlbl);
             this.Controls.Add(this.koguslbl);
             this.Controls.Add(this.toodelbl);
-            this.Controls.Add(this.hindtxt);
-            this.Controls.Add(this.kogustxt);
             this.Controls.Add(this.toodedtxt);
             this.Name = "Form1";
             this.Text = "Tooded";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.kogustxt)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.hindtxt)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -230,8 +233,6 @@
         #endregion
 
         private System.Windows.Forms.TextBox toodedtxt;
-        private System.Windows.Forms.TextBox kogustxt;
-        private System.Windows.Forms.TextBox hindtxt;
         private System.Windows.Forms.Label toodelbl;
         private System.Windows.Forms.Label koguslbl;
         private System.Windows.Forms.Label hindlbl;
@@ -245,6 +246,8 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.NumericUpDown kogustxt;
+        private System.Windows.Forms.NumericUpDown hindtxt;
     }
 }
 
