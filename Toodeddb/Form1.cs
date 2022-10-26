@@ -120,7 +120,7 @@ namespace Toodeddb
             {
                 string ext = Path.GetExtension(openFileDialog1.FileName);
                 pictureBox1.Load(openFileDialog1.FileName);
-                Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height); //Venitab pilti
+                Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height); 
                 pictureBox1.Image = finalImg;
                 pictureBox1.Show();
                 string destinationFile;
@@ -131,7 +131,7 @@ namespace Toodeddb
                 }
                 catch 
                 {
-                    destinationFile = @"..\..\pictures\" + toodedtxt.Text + rand.Next(1, 99999).ToString() + ext; //тут тоже
+                    destinationFile = @"..\..\pictures\" + toodedtxt.Text + rand.Next(1, 99999).ToString() + ext; 
                     File.Copy(openFileDialog1.FileName, destinationFile);
                 }
             }
@@ -192,7 +192,7 @@ namespace Toodeddb
                     cmd.Parameters.AddWithValue("@kat", comboBox1.Items[comboBox1.SelectedIndex].ToString());
                     cmd.ExecuteNonQuery();
                     connect.Close();
-                    string destinationFile = @"..\..\pictures\" + toodedtxt.Text + extn; //проверка
+                    string destinationFile = @"..\..\pictures\" + toodedtxt.Text + extn; 
                     File.Copy(fi.FullName, destinationFile);
                     kustuta_andmed();
                     Naita_Andmed();
