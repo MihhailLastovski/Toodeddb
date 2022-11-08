@@ -7,18 +7,20 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace Toodeddb
 {
     public partial class Form1 : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lasto\source\repos\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane.TTHK\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
         SqlDataAdapter adapter_toode, adapter_kategooria;
-        SqlCommand cmd;
+        SqlCommand cmd, cmd2;
         Random rand = new Random();
         public Form1()
         {
@@ -62,9 +64,9 @@ namespace Toodeddb
         public void kustuta_andmed() 
         {
             toodedtxt.Text = "";
-            kogustxt.Text = "";
-            hindtxt.Text = "";
-            comboBox1.Items.Clear();
+            kogustxt.Value = 0;
+            hindtxt.Value = 0;
+            comboBox1.ResetText();
         }
 
         private void Kustutabtn_Click(object sender, EventArgs e)
@@ -91,6 +93,13 @@ namespace Toodeddb
 
                     dataGridView1.Rows.RemoveAt(selectedIndex);
                 }
+                connect.Close();
+                cmd = new SqlCommand("SELECT Pilt FROM Toodetable WHERE Toodenimetus=@toodenimetus", connect);
+                connect.Open();
+                cmd.Parameters.AddWithValue("@toodenimetus", toodedtxt.Text);
+                object result = cmd.ExecuteScalar();
+                connect.Close();
+                File.Delete(@"..\..\pictures\" + result.ToString());
             }
             else 
             {
@@ -118,22 +127,11 @@ namespace Toodeddb
             openFileDialog1.InitialDirectory = @"C:\Users\opilane.TTHK\Pictures";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                string ext = Path.GetExtension(openFileDialog1.FileName);
                 pictureBox1.Load(openFileDialog1.FileName);
                 Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height); 
                 pictureBox1.Image = finalImg;
                 pictureBox1.Show();
-                string destinationFile;
-                try
-                {
-                    destinationFile = @"..\..\pictures\" + toodedtxt.Text + ext;
-                    File.Copy(openFileDialog1.FileName, destinationFile);
-                }
-                catch 
-                {
-                    destinationFile = @"..\..\pictures\" + toodedtxt.Text + rand.Next(1, 99999).ToString() + ext; 
-                    File.Copy(openFileDialog1.FileName, destinationFile);
-                }
+               
             }
         }
         int Id;
@@ -215,13 +213,27 @@ namespace Toodeddb
                     string extn = fi.Extension;
                     cmd = new SqlCommand("INSERT INTO Toodetable (Toodenimetus, Kogus, Hind, Pilt, Kategooria_Id) " +
                         "VALUES (@toode, @kogus, @hind, @pilt, (SELECT [Id] FROM [Kategooriatable] WHERE [kategooria_nimetus]=@kat))", connect);
+                    cmd2 = new SqlCommand("SELECT Toodenimetus FROM Toodetable WHERE Toodenimetus = @toodedtxt;", connect);
                     connect.Open();
-                    cmd.Parameters.AddWithValue("@toode", toodedtxt.Text);
-                    cmd.Parameters.AddWithValue("@hind", hindtxt.Text.Replace(",","."));
-                    cmd.Parameters.AddWithValue("@kogus", kogustxt.Text);
-                    cmd.Parameters.AddWithValue("@pilt", toodedtxt.Text + extn);
-                    cmd.Parameters.AddWithValue("@kat", comboBox1.Items[comboBox1.SelectedIndex].ToString());
-                    cmd.ExecuteNonQuery();
+                    cmd2.Parameters.AddWithValue("@toodedtxt", toodedtxt.Text);
+                    object result = cmd2.ExecuteScalar();
+                    if (result == null)
+                    {
+                        cmd.Parameters.AddWithValue("@toode", toodedtxt.Text);
+                        cmd.Parameters.AddWithValue("@hind", hindtxt.Text.Replace(",", "."));
+                        cmd.Parameters.AddWithValue("@kogus", kogustxt.Text);
+                        cmd.Parameters.AddWithValue("@pilt", toodedtxt.Text + extn);
+                        cmd.Parameters.AddWithValue("@kat", comboBox1.Items[comboBox1.SelectedIndex].ToString());
+                        cmd.ExecuteNonQuery();
+                        string destinationFile;
+                        try
+                        {
+                            destinationFile = @"..\..\pictures\" + toodedtxt.Text + extn;
+                            File.Copy(openFileDialog1.FileName, destinationFile);
+                        }
+                        catch { }
+
+                    }
                     connect.Close();
                     kustuta_andmed();
                     Naita_Andmed();
