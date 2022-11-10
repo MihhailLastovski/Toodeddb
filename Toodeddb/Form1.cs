@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aspose.Pdf.Drawing;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,10 +19,9 @@ namespace Toodeddb
 {
     public partial class Form1 : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane.TTHK\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lasto\source\repos\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
         SqlDataAdapter adapter_toode, adapter_kategooria;
         SqlCommand cmd, cmd2;
-        Random rand = new Random();
         public Form1()
         {
             InitializeComponent();
@@ -93,13 +93,23 @@ namespace Toodeddb
 
                     dataGridView1.Rows.RemoveAt(selectedIndex);
                 }
-                connect.Close();
-                cmd = new SqlCommand("SELECT Pilt FROM Toodetable WHERE Toodenimetus=@toodenimetus", connect);
-                connect.Open();
-                cmd.Parameters.AddWithValue("@toodenimetus", toodedtxt.Text);
-                object result = cmd.ExecuteScalar();
-                connect.Close();
-                File.Delete(@"..\..\pictures\" + result.ToString());
+                //connect.Close();
+                //cmd = new SqlCommand("SELECT Pilt FROM Toodetable WHERE Toodenimetus=@toodenimetus", connect);
+                //connect.Open();
+                //cmd.Parameters.AddWithValue("@toodenimetus", toodedtxt.Text);
+                //object result = cmd.ExecuteScalar();
+                //connect.Close();
+                string path = pictureBox1.ImageLocation;
+                if (pictureBox1.Image != null)
+                {
+                    pictureBox1.Image.Dispose();
+                    pictureBox1.Image = null;
+                    pictureBox1.ImageLocation = null;
+                    File.Delete(path);
+
+                }
+                pictureBox1.ImageLocation = @"../../../question.png";
+                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             }
             else 
             {
@@ -121,17 +131,21 @@ namespace Toodeddb
             kustuta_andmed();
             Naita_kat();
         }
-
         private void otsi_btn_Click(object sender, EventArgs e)
         {
             openFileDialog1.InitialDirectory = @"C:\Users\opilane.TTHK\Pictures";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                pictureBox1.Load(openFileDialog1.FileName);
-                Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height); 
-                pictureBox1.Image = finalImg;
-                pictureBox1.Show();
-               
+                //Image img = Image.FromFile(openFileDialog1.FileName);
+                //Bitmap finalimg = new Bitmap(img, pictureBox1.Width, pictureBox1.Height);
+                pictureBox1.ImageLocation = openFileDialog1.FileName;
+                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                //pictureBox1.Image = finalimg;
+                //pictureBox1.Load(openFileDialog1.FileName);
+                //Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height); 
+                //pictureBox1.Image = finalImg;
+                //pictureBox1.Show();
+
             }
         }
         int Id;
@@ -144,16 +158,20 @@ namespace Toodeddb
                 toodedtxt.Text = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
                 kogustxt.Text = dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString();
                 hindtxt.Text = dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString();
+                Image img = null;
+                string path = "";
                 try
                 {
-                    pictureBox1.Load(@"..\..\pictures\" + dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString());
+                    path = @"..\..\pictures\" + dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString();
+                    img = Image.FromFile(path);
                 }
                 catch
                 {
                     MessageBox.Show("Fail puudub");
-                    pictureBox1.Load(@"..\..\..\question.png");
+                    path = @"..\..\..\question.png";
+                    img = Image.FromFile(path);
                 }
-                Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height);
+                Bitmap finalImg = new Bitmap(img, pictureBox1.Width, pictureBox1.Height);
                 pictureBox1.Image = finalImg;
                 pictureBox1.Show();
                 int v = Int32.Parse(dataGridView1.Rows[e.RowIndex].Cells[5].Value.ToString());
@@ -163,6 +181,9 @@ namespace Toodeddb
                 cmd.Parameters["@id"].Value = v;
                 comboBox1.SelectedItem = cmd.ExecuteScalar().ToString();
                 connect.Close();
+                pictureBox1.ImageLocation = path;
+                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+
             }
             catch 
             {
@@ -229,7 +250,9 @@ namespace Toodeddb
                         try
                         {
                             destinationFile = @"..\..\pictures\" + toodedtxt.Text + extn;
-                            File.Copy(openFileDialog1.FileName, destinationFile);
+                            Image img = Image.FromFile(openFileDialog1.FileName);
+                            Bitmap finalImg = new Bitmap(img, pictureBox1.Width, pictureBox1.Height);
+                            finalImg.Save(destinationFile);
                         }
                         catch { }
 
