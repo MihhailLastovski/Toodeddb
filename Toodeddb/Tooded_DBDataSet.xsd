@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Tooded_DBDataSet" targetNamespace="http://tempuri.org/Tooded_DBDataSet.xsd" xmlns:mstns="http://tempuri.org/Tooded_DBDataSet.xsd" xmlns="http://tempuri.org/Tooded_DBDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="Tooded_DBConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="Tooded_DBConnectionString (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.Toodeddb.Properties.Settings.GlobalReference.Default.Tooded_DBConnectionString" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="KliendidTableAdapter" GeneratorDataComponentClassName="KliendidTableAdapter" Name="Kliendid" UserDataComponentName="KliendidTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="Tooded_DBConnectionString (Settings)" DbObjectName="dbo.Kliendid" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT nimi, tel, isikukood, bonuspunktid, kliendikaart FROM dbo.Kliendid</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="nimi" DataSetColumn="nimi" />
+              <Mapping SourceColumn="tel" DataSetColumn="tel" />
+              <Mapping SourceColumn="isikukood" DataSetColumn="isikukood" />
+              <Mapping SourceColumn="bonuspunktid" DataSetColumn="bonuspunktid" />
+              <Mapping SourceColumn="kliendikaart" DataSetColumn="kliendikaart" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="Tooded_DBDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_UserDSName="Tooded_DBDataSet" msprop:Generator_DataSetName="Tooded_DBDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Kliendid" msprop:Generator_RowEvHandlerName="KliendidRowChangeEventHandler" msprop:Generator_RowDeletedName="KliendidRowDeleted" msprop:Generator_RowDeletingName="KliendidRowDeleting" msprop:Generator_RowEvArgName="KliendidRowChangeEvent" msprop:Generator_TablePropName="Kliendid" msprop:Generator_RowChangedName="KliendidRowChanged" msprop:Generator_RowChangingName="KliendidRowChanging" msprop:Generator_TableClassName="KliendidDataTable" msprop:Generator_RowClassName="KliendidRow" msprop:Generator_TableVarName="tableKliendid" msprop:Generator_UserTableName="Kliendid">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="nimi" msprop:Generator_ColumnPropNameInRow="nimi" msprop:Generator_ColumnPropNameInTable="nimiColumn" msprop:Generator_ColumnVarNameInTable="columnnimi" msprop:Generator_UserColumnName="nimi">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="tel" msprop:Generator_ColumnPropNameInRow="tel" msprop:Generator_ColumnPropNameInTable="telColumn" msprop:Generator_ColumnVarNameInTable="columntel" msprop:Generator_UserColumnName="tel" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="13" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="isikukood" msprop:Generator_ColumnPropNameInRow="isikukood" msprop:Generator_ColumnPropNameInTable="isikukoodColumn" msprop:Generator_ColumnVarNameInTable="columnisikukood" msprop:Generator_UserColumnName="isikukood">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="11" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="bonuspunktid" msprop:Generator_ColumnPropNameInRow="bonuspunktid" msprop:Generator_ColumnPropNameInTable="bonuspunktidColumn" msprop:Generator_ColumnVarNameInTable="columnbonuspunktid" msprop:Generator_UserColumnName="bonuspunktid" type="xs:int" minOccurs="0" />
+              <xs:element name="kliendikaart" msprop:Generator_ColumnPropNameInRow="kliendikaart" msprop:Generator_ColumnPropNameInTable="kliendikaartColumn" msprop:Generator_ColumnVarNameInTable="columnkliendikaart" msprop:Generator_UserColumnName="kliendikaart" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="15" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

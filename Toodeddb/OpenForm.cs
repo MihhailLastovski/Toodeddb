@@ -19,6 +19,7 @@ namespace Toodeddb
             if (role == "Muuja")
             {
                 button2.Enabled = false;
+                button3.Enabled = false;
             }
         }
 
@@ -30,6 +31,11 @@ namespace Toodeddb
         private void button2_Click(object sender, EventArgs e)
         {
             new Form1().ShowDialog();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            new Admin().ShowDialog();
         }
     }
 }

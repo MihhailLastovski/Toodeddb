@@ -26,7 +26,7 @@ namespace Toodeddb
 {
     public partial class Kassa : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lasto\source\repos\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane.TTHK\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
         SqlDataAdapter adapter_toode, adapter_kat;
         SqlCommand cmd, cmd2, cmd3;
         SqlDataReader reader;
@@ -64,7 +64,7 @@ namespace Toodeddb
                 kat_Id = (int)nimetus["Id"];
                 dataGrid = new DataGridView
                 {
-                    Width = 852,
+                    Width = 891,
                     Height = 285,
                     RowHeadersVisible = false,
                     ColumnHeadersVisible = false
@@ -139,45 +139,6 @@ namespace Toodeddb
             connect.Close();
         }
 
-        /*private void dataGridView1_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-
-            try
-            {
-                numericUpDown1.Value = 0;
-                label4.Text = null;
-                label1.Text = dataGridView1.Rows[e.RowIndex].Cells[1].Value.ToString();
-                label2.Text = dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString();
-                label3.Text = dataGridView1.Rows[e.RowIndex].Cells[3].Value.ToString();
-                try
-                {
-                    pictureBox1.Load(@"..\..\pictures\" + dataGridView1.Rows[e.RowIndex].Cells[4].Value.ToString());
-                }
-                catch
-                {
-                    MessageBox.Show("Fail puudub");
-                    pictureBox1.Load(@"..\..\..\question.png");
-                }
-                Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height);
-                pictureBox1.Image = finalImg;
-                pictureBox1.Show();
-                int v = Int32.Parse(dataGridView1.Rows[e.RowIndex].Cells[5].Value.ToString());
-                cmd = new SqlCommand("SELECT [Kategooria_nimetus] FROM [Kategooriatable] WHERE [Id]=@id", connect);
-                cmd2 = new SqlCommand("SELECT [Kogus] FROM [Toodetable] WHERE Toodenimetus = '" + label1.Text + "'", connect);
-                connect.Open();
-                cmd.Parameters.Add("@id", SqlDbType.Int);
-                cmd.Parameters["@id"].Value = v;
-                numericUpDown1.Maximum = (int)cmd2.ExecuteScalar();
-                label4.Text = cmd.ExecuteScalar().ToString();
-                connect.Close();
-            }
-            catch
-            {
-                MessageBox.Show("Vali toode!");
-            }
-
-        }
-        */
         Document tsekk = new Document();
         List <string> tsekk_array = new List<string>();
         List<decimal> kokku_hind = new List<decimal>();
@@ -228,8 +189,8 @@ namespace Toodeddb
             kooku_text.TextState.ForegroundColor = Aspose.Pdf.Color.FromRgb(System.Drawing.Color.Red);
             TextBuilder textBuilder_kokku = new TextBuilder(page);
             textBuilder_kokku.AppendText(kooku_text);
-
-            tsekk.Save($@"C:\Users\lasto\source\repos\Toodeddb\Toodeddb\Arved\Tšekk{now.ToString("_ddMMyyyy_HHmmss")}.pdf");
+            tsekk.Save($@"..\..\Arved\Tšekk{now.ToString("_ddMMyyyy_HHmmss")}.pdf");
+            System.Diagnostics.Process.Start($@"..\..\Arved\Tšekk{now.ToString("_ddMMyyyy_HHmmss")}.pdf");
         }
 
     }
