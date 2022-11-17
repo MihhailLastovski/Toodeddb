@@ -26,13 +26,13 @@ namespace Toodeddb
 {
     public partial class Kassa : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lasto\source\repos\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane.TTHK\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
         SqlDataAdapter adapter_kat, adapter_nimi;
         SqlCommand cmd, cmd2, cmd3;
         SqlDataReader reader;
         TabControl kategooriad;
         DataGridView dataGrid;
-        ListBox listBox1;
+        ListBox listBox1 , listBox2;
         public Kassa()
         {
             Kategooriad();
@@ -42,6 +42,7 @@ namespace Toodeddb
         public void Kategooriad()
         {
             listBox1 = new ListBox();
+            listBox2 = new ListBox();
             kategooriad = new TabControl();
             kategooriad.Name = "Kategooriad";
             kategooriad.Width = 891;
@@ -82,20 +83,34 @@ namespace Toodeddb
                     name_pilt.Add(reader["Pilt"].ToString());
                     toode_id.Add((int)reader["id"]);
                 }
-                List<int> temp = Split(name_pilt.Count, 3);
-                int tick = 0;
-                for (int x = 0; x < temp.Count; x++)
+                for (int j = 0; j < name_pilt.Count; j++)
                 {
-                    DataGridViewImageColumn column = new DataGridViewImageColumn();
-                    dataGrid.Columns.Add(column);
-
-                    for (int y = 0; y < temp[x]; y++)
-                    {
-                  //      row.Cells[y].Value = Image.FromFile(@"..\..\pictures\" + name_pilt[tick]);
-                        tick++;
-                    }
+                    Image img = Image.FromFile(@"..\..\pictures\" + name_pilt[j]);
+                    DataGridViewImageColumn iconColumn = new DataGridViewImageColumn();
+                    iconColumn.Width = 100;
+                    iconColumn.Image = img;
+                    iconColumn.Name = "Icon_name" + j;
+                    iconColumn.ImageLayout = DataGridViewImageCellLayout.Stretch;
+                    dataGrid.Columns.Add(iconColumn);
+                    dataGrid.Rows[dataGrid.NewRowIndex].Cells["Icon_name" + j].Value = img;
+                    dataGrid.Rows[dataGrid.NewRowIndex].Cells["Icon_name" + j].Tag = toode_id[j];
+                    dataGrid.Rows[dataGrid.NewRowIndex].Cells["Icon_name" + j].ToolTipText = (string)nimetus["Kategooria_nimetus"];
+                    dataGrid.Rows[dataGrid.NewRowIndex].Height = 80;
                 }
-                
+                //List<int> temp = Split(name_pilt.Count, 3);
+                //int tick = 0;
+                //for (int x = 0; x < temp.Count; x++)
+                //{
+                //    DataGridViewImageColumn column = new DataGridViewImageColumn();
+                //    dataGrid.Columns.Add(column);
+
+                //    for (int y = 0; y < temp[x]; y++)
+                //    {
+                //  //      row.Cells[y].Value = Image.FromFile(@"..\..\pictures\" + name_pilt[tick]);
+                //        tick++;
+                //    }
+                //}
+
                 //for (int j = 0; j < name_pilt.Count; j++)
                 //{
                 //    Image img = Image.FromFile(@"..\..\pictures\" + name_pilt[j]);
@@ -156,25 +171,32 @@ namespace Toodeddb
             listBox1.Size = new Size(259, 76);
             listBox1.TabIndex = 30;
             this.Controls.Add(listBox1);
+            listBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(204)));
+            listBox2.FormattingEnabled = true;
+            listBox2.ItemHeight = 18;
+            listBox2.Location = new System.Drawing.Point(285, 450);
+            listBox2.Size = new Size(259, 100);
+            listBox2.TabIndex = 30;
+            this.Controls.Add(listBox2);
             Naita_nimi();
         }
-        private static List<int> Split(int amount, int maxPerGroup)
-        {
-            int amountGroups = amount / maxPerGroup;
+        //private static List<int> Split(int amount, int maxPerGroup)
+        //{
+        //    int amountGroups = amount / maxPerGroup;
 
-            if (amountGroups * maxPerGroup < amount)
-            {
-                amountGroups++;
-            }
+        //    if (amountGroups * maxPerGroup < amount)
+        //    {
+        //        amountGroups++;
+        //    }
 
-            List<int> result = new List<int>();
-            for (int i = 0; i < amountGroups; i++)
-            {
-                result.Add(Math.Min(maxPerGroup, amount));
-                amount -= Math.Min(maxPerGroup, amount);
-            }
-            return result;
-        }
+        //    List<int> result = new List<int>();
+        //    for (int i = 0; i < amountGroups; i++)
+        //    {
+        //        result.Add(Math.Min(maxPerGroup, amount));
+        //        amount -= Math.Min(maxPerGroup, amount);
+        //    }
+        //    return result;
+        //}
         private void Naita_nimi()
         {
             adapter_nimi = new SqlDataAdapter("SELECT isikukood FROM [Kliendid]", connect);
@@ -230,10 +252,19 @@ namespace Toodeddb
                 tsekk_array.Add("Toote nimi " + label1.Text + "; Kogus " + numericUpDown1.Value.ToString() + 
                     "; Hind " + (Decimal.Parse(label3.Text)*numericUpDown1.Value).ToString() +"\u20AC");
                 kokku_hind.Add(Decimal.Parse(label3.Text) * numericUpDown1.Value);
+                listBox2.Items.Add(label1.Text + "; Kogus " + numericUpDown1.Value.ToString());
             }
         }
 
         string kaart_;
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            listBox2.Items.Remove(listBox2.SelectedIndex);
+            tsekk_array.RemoveAt(listBox2.SelectedIndex);
+            kokku_hind.RemoveAt(listBox2.SelectedIndex);
+        }
+
         decimal allahindlus;
         string result;
         string nimi;
@@ -310,10 +341,13 @@ namespace Toodeddb
                 kliendid_text = new TextFragment("Kliendi nimi: " + nimi + "  Kliendikaart: " + kaart_ + "  Allahindlus: "+ a +"%");
 
             }
-            int punktid = Decimal.ToInt32(kokkuh * 0.03M);
-
+            int punktid = Decimal.ToInt32(Math.Round(kokkuh * 0.05M,0, MidpointRounding.AwayFromZero));
             connect.Open();
-            cmd = new SqlCommand("UPDATE Kliendid SET bonuspunktid = " + punktid + "WHERE isikukood = '" + listBox1.Items[listBox1.SelectedIndex].ToString() + "'", connect);
+            cmd2 = new SqlCommand("SELECT bonuspunktid FROM Kliendid WHERE isikukood = '" + listBox1.Items[listBox1.SelectedIndex].ToString() + "'", connect);
+            int bonus_ = (int)cmd2.ExecuteScalar();
+            int final_punkt = punktid + bonus_;
+            cmd = new SqlCommand("UPDATE Kliendid SET bonuspunktid = " + final_punkt + "WHERE isikukood = '" + listBox1.Items[listBox1.SelectedIndex].ToString() + "'", connect);
+            cmd.ExecuteNonQuery();
             connect.Close();
             kooku_text.Position = new Position(90, y - 20);
             kooku_text.TextState.FontSize = 13;

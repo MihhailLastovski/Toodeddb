@@ -15,7 +15,7 @@ namespace Toodeddb
 {
     public partial class Admin : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lasto\source\repos\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane.TTHK\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
         SqlDataAdapter adapter_kaart;
         SqlCommand cmd, cmd2;
         DataGridView dr;
@@ -98,8 +98,8 @@ namespace Toodeddb
             {
                 try
                 {
-                    cmd = new SqlCommand("INSERT INTO Kliendid (nimi, tel, isikukood, kliendikaartID) " +
-                        "VALUES (@nimi, @tel, @isik, (SELECT [Id] FROM [Kliendikaart] WHERE [kliendikaart]=@kaart))", connect);
+                    cmd = new SqlCommand("INSERT INTO Kliendid (nimi, tel, isikukood, bonuspunktid, kliendikaartID) " +
+                        "VALUES (@nimi, @tel, @isik, @bonuspunkt, (SELECT [Id] FROM [Kliendikaart] WHERE [kliendikaart]=@kaart))", connect);
                     cmd2 = new SqlCommand("SELECT isikukood FROM Kliendid WHERE isikukood = @txt_isik;", connect);
                     connect.Open();
                     cmd2.Parameters.AddWithValue("@txt_isik", txt_isik.Text);
@@ -109,6 +109,7 @@ namespace Toodeddb
                         cmd.Parameters.AddWithValue("@nimi", txt_name.Text);
                         cmd.Parameters.AddWithValue("@tel", txt_tel.Text);
                         cmd.Parameters.AddWithValue("@isik", txt_isik.Text);
+                        cmd.Parameters.AddWithValue("@bonuspunkt", 0);
                         cmd.Parameters.AddWithValue("@kaart", comboBox1.Items[comboBox1.SelectedIndex].ToString());
                         cmd.ExecuteNonQuery();
 
