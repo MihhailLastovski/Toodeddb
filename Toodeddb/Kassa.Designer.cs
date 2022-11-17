@@ -121,7 +121,7 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(813, 358);
+            this.numericUpDown1.Location = new System.Drawing.Point(813, 360);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(93, 20);
             this.numericUpDown1.TabIndex = 26;
@@ -129,7 +129,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.Location = new System.Drawing.Point(588, 411);
+            this.button1.Location = new System.Drawing.Point(588, 525);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(156, 28);
             this.button1.TabIndex = 27;
@@ -140,7 +140,7 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(769, 411);
+            this.button2.Location = new System.Drawing.Point(769, 525);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(137, 28);
             this.button2.TabIndex = 28;
@@ -152,7 +152,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(186)));
-            this.label5.Location = new System.Drawing.Point(643, 359);
+            this.label5.Location = new System.Drawing.Point(643, 360);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(101, 20);
             this.label5.TabIndex = 29;
@@ -162,7 +162,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(914, 449);
+            this.ClientSize = new System.Drawing.Size(914, 565);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);

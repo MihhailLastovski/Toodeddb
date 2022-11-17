@@ -19,7 +19,7 @@ namespace Toodeddb
 {
     public partial class Form1 : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane.TTHK\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lasto\source\repos\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
         SqlDataAdapter adapter_toode, adapter_kategooria;
         SqlCommand cmd, cmd2;
         public Form1()
@@ -67,6 +67,7 @@ namespace Toodeddb
             kogustxt.Value = 0;
             hindtxt.Value = 0;
             comboBox1.ResetText();
+            comboBox1.Items.Clear();
         }
 
         private void Kustutabtn_Click(object sender, EventArgs e)
@@ -82,24 +83,20 @@ namespace Toodeddb
                 }
 
                 string sql = "DELETE FROM Toodetable WHERE Id = @rowID";
-
+                int selectedIndex;
+                int rowID;
                 using (SqlCommand deleteRecord = new SqlCommand(sql, connect))
                 {
-                    int selectedIndex = dataGridView1.SelectedRows[0].Index;
-                    int rowID = Convert.ToInt32(dataGridView1[0, selectedIndex].Value);
+                    selectedIndex = dataGridView1.SelectedRows[0].Index;
+                    rowID = Convert.ToInt32(dataGridView1[0, selectedIndex].Value);
 
                     deleteRecord.Parameters.AddWithValue("@rowID", rowID);
                     deleteRecord.ExecuteNonQuery();
 
                     dataGridView1.Rows.RemoveAt(selectedIndex);
                 }
-                //connect.Close();
-                //cmd = new SqlCommand("SELECT Pilt FROM Toodetable WHERE Toodenimetus=@toodenimetus", connect);
-                //connect.Open();
-                //cmd.Parameters.AddWithValue("@toodenimetus", toodedtxt.Text);
-                //object result = cmd.ExecuteScalar();
-                //connect.Close();
                 string path = pictureBox1.ImageLocation;
+                
                 if (pictureBox1.Image != null)
                 {
                     pictureBox1.Image.Dispose();
@@ -136,16 +133,8 @@ namespace Toodeddb
             openFileDialog1.InitialDirectory = @"C:\Users\opilane.TTHK\Pictures";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                //Image img = Image.FromFile(openFileDialog1.FileName);
-                //Bitmap finalimg = new Bitmap(img, pictureBox1.Width, pictureBox1.Height);
                 pictureBox1.ImageLocation = openFileDialog1.FileName;
                 pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-                //pictureBox1.Image = finalimg;
-                //pictureBox1.Load(openFileDialog1.FileName);
-                //Bitmap finalImg = new Bitmap(pictureBox1.Image, pictureBox1.Width, pictureBox1.Height); 
-                //pictureBox1.Image = finalImg;
-                //pictureBox1.Show();
-
             }
         }
         int Id;

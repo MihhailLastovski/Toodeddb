@@ -126,6 +126,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Tooded_DBDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Tooded_DBDataSet1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Tooded_DBDataSet1.xsd</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Admin.resx">
       <DependentUpon>Admin.cs</DependentUpon>
     </EmbeddedResource>
@@ -173,6 +178,17 @@
     </None>
     <None Include="Tooded_DBDataSet.xss">
       <DependentUpon>Tooded_DBDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Tooded_DBDataSet1.xsc">
+      <DependentUpon>Tooded_DBDataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="Tooded_DBDataSet1.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>Tooded_DBDataSet1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Tooded_DBDataSet1.xss">
+      <DependentUpon>Tooded_DBDataSet1.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
