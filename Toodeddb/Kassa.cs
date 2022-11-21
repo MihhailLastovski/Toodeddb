@@ -26,13 +26,14 @@ namespace Toodeddb
 {
     public partial class Kassa : Form
     {
-        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\opilane.TTHK\source\repos\Lastovski_TARpv21\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
-        SqlDataAdapter adapter_kat, adapter_nimi;
+        SqlConnection connect = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\lasto\source\repos\Toodeddb\Toodeddb\AppData\Tooded_DB.mdf;Integrated Security=True");
+        SqlDataAdapter adapter_kat, adapter_nimi, adapter_toode;
         SqlCommand cmd, cmd2, cmd3;
         SqlDataReader reader;
         TabControl kategooriad;
         DataGridView dataGrid;
         ListBox listBox1 , listBox2;
+        TableLayoutPanel tabLP;
         public Kassa()
         {
             Kategooriad();
@@ -64,17 +65,32 @@ namespace Toodeddb
                 kategooriad.TabPages[i].ImageIndex = i;
                 i++;
                 kat_Id = (int)nimetus["Id"];
-                dataGrid = new DataGridView
+                //dataGrid = new DataGridView
+                //{
+                //    Width = 891,
+                //    Height = 285,
+                //    RowHeadersVisible = false,
+                //    ColumnHeadersVisible = false
+                //};
+                tabLP = new TableLayoutPanel
                 {
                     Width = 891,
-                    Height = 285,
-                    RowHeadersVisible = false,
-                    ColumnHeadersVisible = false
+                    Height = 285
                 };
-                kategooriad.TabPages[i - 1].Controls.Add(dataGrid);
-                dataGrid.CellClick += DataGrid_CellClick;
+                kategooriad.TabPages[i - 1].Controls.Add(tabLP);
+                //dataGrid.CellClick += DataGrid_CellClick;
+                int colWidth;
+                int rowHeight;
+                PictureBox pbox;
+                Random rnd = new Random();
+
+                tabLP.Controls.Clear();
+                tabLP.ColumnStyles.Clear();
+                tabLP.RowStyles.Clear();
+
+                
                 connect.Open();
-                cmd = new SqlCommand("SELECT id, Pilt FROM Toodetable WHERE Kategooria_id = "+kat_Id, connect);
+                cmd = new SqlCommand("SELECT id, Pilt FROM Toodetable WHERE Kategooria_id = " + kat_Id, connect);
                 reader = cmd.ExecuteReader();
                 List<string> name_pilt = new List<string>();
                 List<int> toode_id = new List<int>();
@@ -83,20 +99,68 @@ namespace Toodeddb
                     name_pilt.Add(reader["Pilt"].ToString());
                     toode_id.Add((int)reader["id"]);
                 }
-                for (int j = 0; j < name_pilt.Count; j++)
+                connect.Close();
+                int tick = 0;
+                string[] strings = name_pilt.ToArray();
+                
+                if (name_pilt.Count != 0)
                 {
-                    Image img = Image.FromFile(@"..\..\pictures\" + name_pilt[j]);
-                    DataGridViewImageColumn iconColumn = new DataGridViewImageColumn();
-                    iconColumn.Width = 100;
-                    iconColumn.Image = img;
-                    iconColumn.Name = "Icon_name" + j;
-                    iconColumn.ImageLayout = DataGridViewImageCellLayout.Stretch;
-                    dataGrid.Columns.Add(iconColumn);
-                    dataGrid.Rows[dataGrid.NewRowIndex].Cells["Icon_name" + j].Value = img;
-                    dataGrid.Rows[dataGrid.NewRowIndex].Cells["Icon_name" + j].Tag = toode_id[j];
-                    dataGrid.Rows[dataGrid.NewRowIndex].Cells["Icon_name" + j].ToolTipText = (string)nimetus["Kategooria_nimetus"];
-                    dataGrid.Rows[dataGrid.NewRowIndex].Height = 80;
+                    int rows = strings.Skip(strings.Length / 2).ToArray().Length;
+                    int cols = strings.Take(strings.Length / 2).ToArray().Length;
+                    colWidth = 100 / cols;
+                    if (100 % cols != 0)
+                        colWidth--;
+
+                    rowHeight = 100 / rows;
+                    if (100 % rows != 0)
+                        rowHeight--;
+                    tabLP.ColumnCount = cols;
+                    for (int f = 0; f < rows; f++)
+                    {
+                        tabLP.RowStyles.Add(new RowStyle(SizeType.Percent, rowHeight));
+                        for (int j = 0; j < cols; j++)
+                        {
+                            if (name_pilt.Count - 1 >= tick)
+                            {
+                                tabLP.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, colWidth));
+                                pbox = new PictureBox() { Image = Image.FromFile(@"..\..\pictures\" + name_pilt[tick]) };
+                                pbox.Dock = DockStyle.Fill;
+                                pbox.SizeMode = PictureBoxSizeMode.StretchImage;
+                                pbox.Click += Pbox_Click;
+                                pbox.Tag = toode_id[tick];
+                                pbox.Name = (string)nimetus["Kategooria_nimetus"];
+                                tick++;
+                                tabLP.Controls.Add(pbox, j, f);                         
+                            }
+                        }
+                        
+                    }
                 }
+                //DataTable dt_toode = new DataTable();
+                //adapter_toode = new SqlDataAdapter("SELECT id, Pilt FROM Toodetable WHERE Kategooria_id = " + kat_Id, connect);
+                //adapter_toode.Fill(dt_toode);
+                //dataGrid.DataSource = dt_toode;
+                //List<string> name_pilt = new List<string>();
+                //List<int> toode_id = new List<int>();
+                //while (reader.Read())
+                //{
+                //    name_pilt.Add(reader["Pilt"].ToString());
+                //    toode_id.Add((int)reader["id"]);
+                //}
+                //for (int j = 0; j < name_pilt.Count; j++)
+                //{
+                //    Image img = Image.FromFile(@"..\..\pictures\" + name_pilt[j]);
+                //    DataGridViewImageColumn iconColumn = new DataGridViewImageColumn();
+                //    iconColumn.Width = 100;
+                //    iconColumn.Image = img;
+                //    iconColumn.Name = "Icon_name" + j;
+                //    iconColumn.ImageLayout = DataGridViewImageCellLayout.Stretch;
+                //    dataGrid.Columns.Add(iconColumn);
+                //    dataGrid.Rows[dataGrid.NewRowIndex].Cells["Icon_name" + j].Value = img;
+                //    dataGrid.Rows[dataGrid.NewRowIndex].Cells["Icon_name" + j].Tag = toode_id[j];
+                //    dataGrid.Rows[dataGrid.NewRowIndex].Cells["Icon_name" + j].ToolTipText = (string)nimetus["Kategooria_nimetus"];
+                //    dataGrid.Rows[dataGrid.NewRowIndex].Height = 80;
+                //}
                 //List<int> temp = Split(name_pilt.Count, 3);
                 //int tick = 0;
                 //for (int x = 0; x < temp.Count; x++)
@@ -159,8 +223,6 @@ namespace Toodeddb
                     dataGrid.Rows.Add(iconRow);
 
                 }*/
-
-                connect.Close();
             }
             kategooriad.ImageList = iconsList;
             this.Controls.Add(kategooriad);
@@ -180,23 +242,53 @@ namespace Toodeddb
             this.Controls.Add(listBox2);
             Naita_nimi();
         }
-        //private static List<int> Split(int amount, int maxPerGroup)
-        //{
-        //    int amountGroups = amount / maxPerGroup;
 
-        //    if (amountGroups * maxPerGroup < amount)
-        //    {
-        //        amountGroups++;
-        //    }
+        private void Pbox_Click(object sender, EventArgs e)
+        {
+            PictureBox pictureBox = (PictureBox)sender;
+            try
+            {
+                connect.Open();
+                cmd3 = new SqlCommand("SELECT Toodenimetus, Kogus, Hind FROM Toodetable WHERE id = " + pictureBox.Tag, connect);
+                reader = cmd3.ExecuteReader();
+                while (reader.Read())
+                {
+                    label1.Text = reader["Toodenimetus"].ToString();
+                    label2.Text = reader["Kogus"].ToString();
+                    label3.Text = reader["Hind"].ToString();
+                }
+                label4.Text = pictureBox.Name;
+                connect.Close();
+                numericUpDown1.Value = 0;
+                cmd2 = new SqlCommand("SELECT [Kogus] FROM [Toodetable] WHERE Toodenimetus = '" + label1.Text + "'", connect);
+                connect.Open();
+                numericUpDown1.Maximum = (int)cmd2.ExecuteScalar();
+                connect.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Vali toode!");
+            }
+        }
 
-        //    List<int> result = new List<int>();
-        //    for (int i = 0; i < amountGroups; i++)
-        //    {
-        //        result.Add(Math.Min(maxPerGroup, amount));
-        //        amount -= Math.Min(maxPerGroup, amount);
-        //    }
-        //    return result;
-        //}
+        private static List<int> Split(int amount, int maxPerGroup)
+        {
+            int amountGroups = amount / maxPerGroup;
+
+            if (amountGroups * maxPerGroup < amount)
+            {
+                amountGroups++;
+            }
+
+            List<int> result = new List<int>();
+            for (int i = 0; i < amountGroups; i++)
+            {
+                result.Add(Math.Min(maxPerGroup, amount));
+                amount -= Math.Min(maxPerGroup, amount);
+            }
+            return result;
+        }
+        
         private void Naita_nimi()
         {
             adapter_nimi = new SqlDataAdapter("SELECT isikukood FROM [Kliendid]", connect);
@@ -211,30 +303,7 @@ namespace Toodeddb
 
         private void DataGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            DataGridView data_grid = (DataGridView)sender;
-            try
-            {
-                connect.Open();
-                cmd3 = new SqlCommand("SELECT Toodenimetus, Kogus, Hind FROM Toodetable WHERE id = " + data_grid.CurrentCell.Tag, connect);
-                reader = cmd3.ExecuteReader();
-                while (reader.Read())
-                {
-                    label1.Text = reader["Toodenimetus"].ToString();
-                    label2.Text = reader["Kogus"].ToString();
-                    label3.Text = reader["Hind"].ToString();
-                }
-                label4.Text = data_grid.CurrentCell.ToolTipText;
-                connect.Close();
-                numericUpDown1.Value = 0;
-                cmd2 = new SqlCommand("SELECT [Kogus] FROM [Toodetable] WHERE Toodenimetus = '" + label1.Text + "'", connect);
-                connect.Open();
-                numericUpDown1.Maximum = (int)cmd2.ExecuteScalar();
-                connect.Close();
-            }
-            catch
-            {
-                MessageBox.Show("Vali toode!");
-            }
+            
         }
 
 
@@ -310,7 +379,7 @@ namespace Toodeddb
             connect.Close();       
             TextFragment kooku_text;
             TextFragment kliendid_text;
-            if (listBox1.Items[listBox1.SelectedIndex].ToString() == "vali")
+            if (listBox1.Items[listBox1.SelectedIndex].ToString() == "vali" || listBox1.Items[listBox1.SelectedIndex].ToString() == null)
             {
                 for (int i = 0; i < kokku_hind.Count; i++)
                 {
